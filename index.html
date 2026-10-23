@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="theme-color" content="#751f2b">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>LOVE, ARCHIVED. — A Cinematic Interactive Scrapbook</title>
+  
+  <!-- Google Fonts for Editorial Aesthetics -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&amp;family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --archive-red: #751f2b;
+      --paper-cream: #f2e7d5;
+      --dusty-rose: #d9a8a4;
+      --ink: #292421;
+      --aged-olive: #a69a80;
+      --photo-cream: #e8d5c0;
+      --gingham-red: #8b2635;
+      --shadow-soft: 0 10px 30px rgba(41, 36, 33, 0.12);
+      --shadow-deep: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+      --shadow-3d: 0 30px 60px rgba(0,0,0,0.4), 0 10px 20px rgba(0,0,0,0.2);
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-hand: 'Caveat', cursive;
+      --transition-smooth: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Reset & Base Styles */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+      background-color: var(--archive-red);
+      color: var(--ink);
+    }
+
+    body {
+      font-family: var(--font-sans);
+      overflow-x: hidden;
+      line-height: 1.6;
+      background-color: var(--archive-red);
+      /* Subtle crumpled paper texture simulation overlay */
+      background-image: 
+        radial-gradient(circle at 50% 50%, rgba(242, 231, 213, 0.08) 0%, rgba(0, 0, 0, 0.25) 100%),
+        repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.02) 0px, rgba(0, 0, 0, 0.02) 2px, transparent 2px, transparent 4px);
+      perspective: 1200px;
+    }
+
+    /* Typography Utilities */
+    h1, h2, h3, .serif {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      line-height: 1.15;
+    }
+
+    .handwriting {
+      font-family: var(--font-hand);
+      color: var(--archive-red);
+      font-size: 1.35rem;
+    }
+
+    /* Scroll Motion Reveal Classes */
+    .motion-reveal {
+      opacity: 0;
+      transform: translateY(30px) scale(0.97);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .motion-reveal.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* Fixed Navigation Bar */
+    .nav-container {
+      position: fixed;
+      top: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      background: rgba(242, 231, 213, 0.92);
+      backdrop-filter: blur(12px);
+      padding: 0.6rem 1.4rem;
+      border-radius: 40px;
+      border: 1px solid rgba(166, 154, 128, 0.3);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      max-width: 90vw;
+      transition: var(--transition-smooth);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.2rem;
+      list-style: none;
+      align-items: center;
+      overflow-x: auto;
+      white-space: nowrap;
+      padding: 0 0.2rem;
+    }
+
+    .nav-links::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-links a {
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: var(--transition-smooth);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--archive-red);
+      background: rgba(117, 31, 43, 0.1);
+    }
+
+    /* Scrapbook Layering Components */
+    .section-wrapper {
+      position: relative;
+      min-height: 100vh;
+      padding: 6rem 1.5rem 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transform-style: preserve-3d;
+    }
+
+    .paper-sheet {
+      background-color: var(--paper-cream);
+      box-shadow: var(--shadow-3d);
+      border-radius: 3px;
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      padding: 3.5rem 2rem;
+      margin: 0 auto;
+      border: 1px solid rgba(41, 36, 33, 0.08);
+      transition: transform 0.1s ease-out;
+      transform-style: preserve-3d;
+    }
+
+    /* Floating Decorative Elements */
+    .decor-flower {
+      position: absolute;
+      pointer-events: none;
+      z-index: 15;
+      filter: drop-shadow(4px 8px 12px rgba(0,0,0,0.3));
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .tape-strip {
+      position: absolute;
+      height: 26px;
+      background: rgba(242, 231, 213, 0.65);
+      backdrop-filter: blur(2px);
+      border-left: 2px dashed rgba(0,0,0,0.1);
+      border-right: 2px dashed rgba(0,0,0,0.1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      z-index: 12;
+      pointer-events: none;
+    }
+
+    /* Gingham Texture Background Patch */
+    .gingham-patch {
+      position: absolute;
+      background-color: var(--paper-cream);
+      background-image: 
+        linear-gradient(90deg, rgba(139, 38, 53, 0.22) 50%, transparent 50%),
+        linear-gradient(rgba(139, 38, 53, 0.22) 50%, transparent 50%);
+      background-size: 20px 20px;
+      border: 1px dashed rgba(117, 31, 43, 0.4);
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    /* --- SECTION 01: OPEN THE ARCHIVE --- */
+    #archive {
+      background-color: var(--archive-red);
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-title-box {
+      margin-bottom: 2.5rem;
+      color: var(--paper-cream);
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .hero-title-box h1 {
+      font-size: clamp(3rem, 7.5vw, 6rem);
+      letter-spacing: 0.02em;
+      line-height: 1;
+      text-transform: uppercase;
+      text-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      margin: 0;
+    }
+
+    .hero-subtitle {
+      font-family: var(--font-hand);
+      font-size: clamp(1.3rem, 3vw, 1.75rem);
+      color: var(--dusty-rose);
+      transform: rotate(-1.5deg);
+      display: block;
+      margin-top: 0.2rem;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    /* Interactive 3D Envelope Physics */
+    .envelope-wrapper {
+      position: relative;
+      width: clamp(300px, 80vw, 480px);
+      height: clamp(210px, 55vw, 310px);
+      margin: 1.5rem auto;
+      cursor: pointer;
+      perspective: 1200px;
+      transform-style: preserve-3d;
+      transition: transform 0.4s ease;
+    }
+
+    .envelope-wrapper:hover {
+      transform: translateY(-6px) scale(1.02) rotate(0.5deg);
+    }
+
+    .envelope-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: #e3d3bd;
+      border-radius: 6px;
+      box-shadow: var(--shadow-3d);
+      border: 1px solid rgba(0,0,0,0.12);
+    }
+
+    .envelope-letter {
+      position: absolute;
+      width: 90%;
+      height: 88%;
+      left: 5%;
+      bottom: 5%;
+      background: #ffffff;
+      padding: 1.8rem;
+      border-radius: 4px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+      z-index: 2;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-image: repeating-linear-gradient(#ffffff, #ffffff 28px, #f1eae0 29px);
+    }
+
+    .envelope-wrapper.open .envelope-letter {
+      transform: translateY(-62%) scale(1.02);
+      z-index: 5;
+    }
+
+    .envelope-front {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: clamp(150px, 40vw, 240px) solid var(--paper-cream);
+      border-right: clamp(150px, 40vw, 240px) solid var(--paper-cream);
+      border-bottom: clamp(115px, 30vw, 165px) solid #dfceb7;
+      border-top: clamp(95px, 25vw, 145px) solid transparent;
+      z-index: 3;
+      filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.12));
+    }
+
+    .envelope-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: clamp(150px, 40vw, 240px) solid transparent;
+      border-right: clamp(150px, 40vw, 240px) solid transparent;
+      border-top: clamp(115px, 30vw, 165px) solid var(--paper-cream);
+      transform-origin: top center;
+      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 4;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+    }
+
+    .envelope-wrapper.open .envelope-flap {
+      transform: rotateX(180deg);
+      z-index: 1;
+    }
+
+    .btn-open-archive {
+      margin-top: 2.5rem;
+      background: var(--paper-cream);
+      color: var(--archive-red);
+      border: 2px solid var(--archive-red);
+      padding: 0.9rem 2.4rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+      transition: var(--transition-smooth);
+      position: relative;
+      z-index: 10;
+    }
+
+    .btn-open-archive:hover {
+      background: var(--archive-red);
+      color: var(--paper-cream);
+      border-color: var(--paper-cream);
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
+
+    /* --- SECTION 02: MEMORY TIMELINE --- */
+    .timeline-spine {
+      position: relative;
+      padding: 2rem 0;
+    }
+
+    .timeline-spine::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 24px;
+      transform: translateX(-50%);
+      background: #1a1817;
+      border-left: 2px dashed #444;
+      border-right: 2px dashed #444;
+      opacity: 0.85;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+
+    @media (max-width: 768px) {
+      .timeline-spine::before {
+        left: 20px;
+      }
+    }
+
+    .timeline-item {
+      display: flex;
+      justify-content: flex-end;
+      padding-right: 3rem;
+      position: relative;
+      margin-bottom: 4rem;
+      width: 50%;
+    }
+
+    .timeline-item:nth-child(even) {
+      align-self: flex-end;
+      justify-content: flex-start;
+      padding-right: 0;
+      padding-left: 3rem;
+      margin-left: 50%;
+    }
+
+    @media (max-width: 768px) {
+      .timeline-item,
+      .timeline-item:nth-child(even) {
+        width: 100%;
+        margin-left: 0;
+        padding-left: 3.5rem;
+        padding-right: 0;
+        justify-content: flex-start;
+      }
+    }
+
+    .film-frame {
+      background: #1f1c1b;
+      padding: 12px 12px 28px 12px;
+      box-shadow: var(--shadow-3d);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      max-width: 330px;
+      width: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+    }
+
+    .film-frame:hover { z-index: 20; }
+
+    .film-photo {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      background: var(--aged-olive);
+      display: block;
+      border-radius: 1px;
+      filter: sepia(0.15) contrast(1.05);
+      transition: filter 0.3s ease;
+    }
+
+    .film-frame:hover .film-photo {
+      filter: sepia(0) contrast(1.1);
+    }
+
+    .film-meta {
+      color: var(--paper-cream);
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      font-family: var(--font-sans);
+    }
+
+    .film-caption {
+      margin-top: 8px;
+      color: var(--paper-cream);
+      font-family: var(--font-hand);
+      font-size: 1.3rem;
+      line-height: 1.2;
+    }
+
+    /* --- SECTION 03: KEEPSAKES / COLLAGE --- */
+    .keepsake-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 2.5rem;
+      position: relative;
+      margin-top: 2rem;
+    }
+
+    .interactive-note {
+      background: #fffdf7;
+      padding: 1.8rem;
+      border-radius: 2px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      border: 1px solid rgba(0,0,0,0.05);
+      min-height: 190px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transform-style: preserve-3d;
+    }
+
+    .interactive-note::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 65px;
+      height: 20px;
+      background: rgba(217, 168, 164, 0.55);
+      backdrop-filter: blur(3px);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .interactive-note:hover {
+      transform: translateY(-8px) rotate(1deg) scale(1.02);
+      box-shadow: var(--shadow-3d);
+    }
+
+    .interactive-note.flipped .note-content-front {
+      display: none;
+    }
+
+    .interactive-note.flipped .note-content-back {
+      display: block;
+    }
+
+    .note-content-back {
+      display: none;
+      color: var(--archive-red);
+    }
+
+    .ticket-stub {
+      background: var(--photo-cream);
+      border: 2px dashed var(--aged-olive);
+      padding: 1.4rem;
+      border-radius: 6px;
+      position: relative;
+      font-family: var(--font-sans);
+      box-shadow: var(--shadow-soft);
+      transition: var(--transition-smooth);
+    }
+
+    .ticket-stub:hover {
+      transform: translateY(-6px) rotate(-1deg);
+      box-shadow: var(--shadow-3d);
+    }
+
+    .ticket-stub::before, .ticket-stub::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      background: var(--paper-cream);
+      border-radius: 50%;
+      transform: translateY(-50%);
+    }
+
+    .ticket-stub::before { left: -10px; }
+    .ticket-stub::after { right: -10px; }
+
+    /* --- SECTION 04: OUR SONG (VINYL) --- */
+    .vinyl-container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 3.5rem;
+      margin-top: 2rem;
+    }
+
+    .vinyl-sleeve {
+      width: clamp(250px, 40vw, 330px);
+      height: clamp(250px, 40vw, 330px);
+      background: var(--archive-red);
+      color: var(--paper-cream);
+      padding: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--shadow-3d);
+      position: relative;
+      border: 2px solid rgba(255,255,255,0.12);
+      transition: transform 0.3s ease;
+    }
+
+    .vinyl-sleeve:hover {
+      transform: translateY(-4px);
+    }
+
+    .vinyl-record {
+      width: clamp(230px, 38vw, 310px);
+      height: clamp(230px, 38vw, 310px);
+      background: radial-gradient(circle, #111 35%, #222 36%, #111 38%, #222 45%, #111 55%, #222 65%, #111 70%);
+      border-radius: 50%;
+      box-shadow: var(--shadow-3d);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: transform 0.5s ease;
+    }
+
+    .vinyl-record.spinning {
+      animation: spinVinyl 5s linear infinite;
+    }
+
+    @keyframes spinVinyl {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .vinyl-center-label {
+      width: 32%;
+      height: 32%;
+      background: var(--dusty-rose);
+      border-radius: 50%;
+      border: 4px solid #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 0.65rem;
+      font-weight: bold;
+      color: var(--ink);
+      padding: 4px;
+      box-shadow: inset 0 0 8px rgba(0,0,0,0.3);
+    }
+
+    /* --- SECTION 05: A CALENDAR OF US --- */
+    .calendar-wrapper {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fffdf8;
+      padding: 2.2rem;
+      border: 1px solid var(--aged-olive);
+      box-shadow: var(--shadow-3d);
+      position: relative;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      text-align: center;
+    }
+
+    .calendar-day-head {
+      font-weight: bold;
+      font-size: 0.85rem;
+      color: var(--archive-red);
+      padding-bottom: 0.5rem;
+    }
+
+    .calendar-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #efe8db;
+      font-size: 0.9rem;
+      cursor: pointer;
+      position: relative;
+      transition: var(--transition-smooth);
+      border-radius: 2px;
+    }
+
+    .calendar-day:hover {
+      background: var(--photo-cream);
+      transform: scale(1.08);
+      z-index: 5;
+    }
+
+    .calendar-day.has-event::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      width: 6px;
+      height: 6px;
+      background: var(--archive-red);
+      border-radius: 50%;
+    }
+
+    .calendar-day.selected {
+      background: var(--archive-red);
+      color: var(--paper-cream);
+      font-weight: bold;
+    }
+
+    .calendar-event-panel {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px dashed var(--aged-olive);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.7rem;
+      margin-top: 0.4rem;
+      margin-bottom: 1rem;
+      border: 1px solid var(--aged-olive);
+      border-radius: 4px;
+      font-family: var(--font-sans);
+      background: #faf6ef;
+    }
+
+    /* --- SECTION 06: A LETTER FOR LATER --- */
+    .letter-container {
+      max-width: 680px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 3rem;
+      border-radius: 2px;
+      box-shadow: var(--shadow-3d);
+      position: relative;
+      border: 1px solid rgba(0,0,0,0.08);
+      background-image: repeating-linear-gradient(#ffffff, #ffffff 30px, #f4eee5 31px);
+    }
+
+    .letter-body {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      line-height: 1.85;
+      color: var(--ink);
+      white-space: pre-line;
+    }
+
+    /* --- SECTION 07: THE FINAL ARCHIVE --- */
+    #final-archive {
+      background-color: var(--archive-red);
+      color: var(--paper-cream);
+      text-align: center;
+      min-height: 60vh;
+    }
+
+    .editable-text[] {
+      outline: 1px dashed rgba(117, 31, 43, 0.4);
+      padding: 2px 6px;
+      border-radius: 3px;
+      transition: background 0.2s ease;
+    }
+
+    .editable-text[]:focus {
+      outline: 2px solid var(--archive-red);
+      background: rgba(255,255,255,0.6);
+    }
+
+    /* Lightbox Modal */
+    .lightbox-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(25, 20, 18, 0.94);
+      backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .lightbox-modal.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .lightbox-content {
+      max-width: 90vw;
+      max-height: 85vh;
+      border-radius: 4px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+      transform: scale(0.95);
+      transition: transform 0.3s ease;
+    }
+
+    .lightbox-modal.active .lightbox-content {
+      transform: scale(1);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      color: var(--paper-cream);
+      font-size: 2.5rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    /* Standardized Buttons */
+    .btn-action {
+      background: var(--archive-red);
+      color: var(--paper-cream);
+      border: none;
+      padding: 0.65rem 1.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .btn-action:hover {
+      opacity: 0.95;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* ===== MOTION / DEPTH / MOBILE LAYER ===== */
+    html { scroll-behavior: auto; -webkit-text-size-adjust: 100%; }
+    * { -webkit-tap-highlight-color: transparent; }
+    body { perspective: none; }
+    .section-wrapper, .paper-sheet, .film-frame, .interactive-note { transform-style: flat; }
+    .paper-sheet { transition: none; will-change: translate; }
+    [data-depth] { will-change: translate; }
+
+    .progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 200; background: var(--dusty-rose);
+      transform: scaleX(0); transform-origin: left; pointer-events: none; }
+
+    /* slow, layered reveal (uses individual transform props so inline tilts survive) */
+    .motion-reveal { opacity: 0; translate: 0 56px; scale: .94; transform: none;
+      transition: opacity 1.5s cubic-bezier(.16,1,.3,1), translate 1.5s cubic-bezier(.16,1,.3,1), scale 1.5s cubic-bezier(.16,1,.3,1);
+      transition-delay: var(--d, 0s); }
+    .motion-reveal.visible { opacity: 1; translate: 0 0; scale: 1; transform: none; }
+    .timeline-item.motion-reveal { translate: -48px 48px; }
+    .timeline-item:nth-child(even).motion-reveal { translate: 48px 48px; }
+    .timeline-item.motion-reveal.visible { translate: 0 0; }
+    .hero-title-box.visible h1 { animation: titleIn 2.4s cubic-bezier(.16,1,.3,1) both, glow 6s ease-in-out 2.4s infinite; }
+    @keyframes titleIn { from { letter-spacing: .28em; filter: blur(10px); } to { letter-spacing: .02em; filter: blur(0); } }
+    @keyframes glow { 50% { text-shadow: 0 10px 35px rgba(217,168,164,.5); } }
+
+    /* ambient motion */
+    .decor-flower { animation: sway 7s ease-in-out infinite alternate; }
+    .decor-flower:nth-of-type(even) { animation-duration: 9s; animation-direction: alternate-reverse; }
+    @keyframes sway { from { rotate: -8deg; scale: .96; } to { rotate: 10deg; scale: 1.06; } }
+    .gingham-patch { animation: drift 12s ease-in-out infinite alternate; }
+    @keyframes drift { to { rotate: 5deg; scale: 1.05; } }
+    .envelope-wrapper { animation: bob 6s ease-in-out infinite alternate; }
+    @keyframes bob { from { rotate: -.8deg; } to { rotate: .8deg; } }
+    .btn-open-archive { animation: pulse 3.2s ease-in-out infinite; }
+    @keyframes pulse { 50% { box-shadow: 0 8px 25px rgba(0,0,0,.25), 0 0 0 10px rgba(242,231,213,.12); } }
+    .vinyl-record.offscreen { animation-play-state: paused; }
+    .vinyl-record::after { content:''; position:absolute; inset:0; border-radius:50%;
+      background: conic-gradient(from 0deg, transparent 0 20%, rgba(255,255,255,.07) 25%, transparent 30% 70%, rgba(255,255,255,.07) 75%, transparent 80%); }
+    .nav-links a.active { background: rgba(117,31,43,.12); }
+
+    .petals { position: fixed; inset: 0; pointer-events: none; z-index: 50; overflow: hidden; }
+    .petal { position: absolute; top: -6vh; background: var(--dusty-rose); opacity: .45; border-radius: 150% 0 150% 0;
+      animation: fall var(--t, 18s) linear var(--w, 0s) infinite; }
+    @keyframes fall { from { transform: translate3d(0,0,0) rotate(0); }
+      50% { transform: translate3d(var(--dx,40px),55vh,0) rotate(260deg); }
+      to { transform: translate3d(calc(var(--dx,40px) * -.6),112vh,0) rotate(540deg); } }
+    .extra-decor { position: absolute; pointer-events: none; z-index: 15; opacity: .8; filter: drop-shadow(3px 6px 8px rgba(0,0,0,.25)); }
+
+    /* slow popups */
+    .lightbox-modal { display: flex; flex-direction: column; gap: 1rem; visibility: hidden; opacity: 0;
+      padding: calc(2rem + env(safe-area-inset-top)) 1.2rem calc(2rem + env(safe-area-inset-bottom));
+      transition: opacity .9s ease, visibility 0s linear .9s; }
+    .lightbox-modal.active { visibility: visible; opacity: 1; transition: opacity .9s ease, visibility 0s; }
+    .lightbox-content { transform: scale(.82) translateY(40px) rotate(-2deg); filter: blur(10px); opacity: 0;
+      transition: transform 1.2s cubic-bezier(.16,1,.3,1), filter 1.2s ease, opacity 1s ease; object-fit: contain; }
+    .lightbox-modal.active .lightbox-content { transform: none; filter: blur(0); opacity: 1; }
+    .lightbox-cap { font-family: var(--font-hand); color: var(--paper-cream); font-size: 1.5rem; opacity: 0; translate: 0 14px;
+      transition: opacity 1s ease .5s, translate 1s ease .5s; }
+    .lightbox-modal.active .lightbox-cap { opacity: 1; translate: 0 0; }
+    .lightbox-close { top: calc(1rem + env(safe-area-inset-top)); right: 1rem; width: 48px; height: 48px; line-height: 1; }
+    .interactive-note.flipped .note-content-back { animation: noteIn 1s cubic-bezier(.16,1,.3,1) both; }
+    @keyframes noteIn { from { opacity: 0; translate: 0 14px; filter: blur(4px); } to { opacity: 1; translate: 0 0; filter: blur(0); } }
+
+    /* hover only where hover exists */
+    @media (hover: hover) {
+      .film-frame:hover { scale: 1.05; }
+      .interactive-note:hover, .ticket-stub:hover { translate: 0 -8px; scale: 1.02; }
+    }
+    @media (hover: none) {
+      .envelope-wrapper:hover, .vinyl-sleeve:hover, .calendar-day:hover { transform: none; }
+      .btn-action:hover, .btn-open-archive:hover { transform: none; }
+      .film-frame:active, .interactive-note:active { scale: .97; }
+    }
+
+    /* PHONE */
+    @media (max-width: 768px) {
+      .section-wrapper { min-height: auto; padding: 5.5rem 1rem 2.5rem; }
+      #archive { min-height: 100svh; }
+      #final-archive { min-height: 60svh; }
+      .nav-container { top: calc(.6rem + env(safe-area-inset-top)); padding: .4rem .8rem; backdrop-filter: none; background: rgba(242,231,213,.97); }
+      .nav-links { gap: .5rem; }
+      .nav-links a { font-size: .72rem; padding: .35rem .5rem; }
+      .paper-sheet { padding: 2.2rem 1rem; box-shadow: 0 14px 30px rgba(0,0,0,.3); }
+      .paper-sheet h2 { font-size: clamp(1.6rem, 8vw, 2.3rem) !important; }
+      .tape-strip { backdrop-filter: none; }
+      .film-frame { max-width: 100%; box-shadow: 0 12px 24px rgba(0,0,0,.35); }
+      .timeline-item.motion-reveal, .timeline-item:nth-child(even).motion-reveal { translate: 0 48px; }
+      .timeline-item.motion-reveal.visible { translate: 0 0; }
+      .keepsake-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .vinyl-container { gap: 2rem; }
+      .calendar-wrapper { padding: 1rem; }
+      .calendar-grid { gap: 3px; }
+      .calendar-day { font-size: .8rem; }
+      .calendar-header h3 { font-size: 1.1rem !important; }
+      .btn-action, .btn-open-archive { min-height: 44px; }
+      .btn-open-archive { padding: .8rem 1.8rem; }
+      .form-input { font-size: 16px; }
+      .letter-container { padding: 1.6rem 1.2rem; }
+      .letter-body { font-size: 1.1rem; line-height: 1.8; }
+      .decor-flower { opacity: .85; }
+      .extra-decor { width: 44px !important; height: 44px !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .petals, .decor-flower, .gingham-patch, .envelope-wrapper, .btn-open-archive { animation: none !important; }
+      .motion-reveal { translate: 0 0; scale: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="petals" id="petals" aria-hidden="true"></div>
+
+  <!-- Navigation Bar -->
+  <nav class="nav-container" aria-label="Main Navigation">
+    <ul class="nav-links">
+      <li><a href="#archive">Archive</a></li>
+      <li><a href="#memories">Memories</a></li>
+      <li><a href="#keepsakes">Keepsakes</a></li>
+      <li><a href="#song">Song</a></li>
+      <li><a href="#calendar">Calendar</a></li>
+      <li><a href="#letter">Letter</a></li>
+      <li><a href="#final-archive">End</a></li>
+    </ul>
+  </nav>
+
+  <!-- SECTION 01: OPEN THE ARCHIVE -->
+  <section id="archive" class="section-wrapper">
+    <!-- Decorative Gingham and Flower Patches -->
+    <div class="gingham-patch" data-depth="0.12" style="width: 140px; height: 140px; top: 10%; left: 8%; transform: rotate(-8deg);"></div>
+    <svg class="decor-flower" data-depth="0.22" style="width: 70px; height: 70px; top: 12%; right: 10%; transform: rotate(15deg);" viewBox="0 0 100 100" fill="none">
+      <path d="M50 20C40 5 20 20 35 35C15 35 15 60 35 60C20 75 40 90 50 75C60 90 80 75 65 60C85 60 85 35 65 35C80 20 60 5 50 20Z" fill="#d9a8a4" opacity="0.85"/>
+      <circle cx="50" cy="47" r="8" fill="#751f2b"/>
+    </svg>
+
+    <div class="hero-title-box motion-reveal">
+      <h1 class="editable-text"  spellcheck="false">LOVE, ARCHIVED.</h1>
+      <span class="hero-subtitle editable-text">A collection of things worth keeping.</span>
+    </div>
+
+    <div class="envelope-wrapper open motion-reveal" id="heroEnvelope" onclick="toggleHeroEnvelope()" role="button" aria-label="Open Envelope">
+      <div class="envelope-back"></div>
+      <div class="envelope-letter">
+        <p class="handwriting editable-text" >For you, always.</p>
+        <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;"
+           class="editable-text">My Kuchu Puchu Sona</p>
+      </div>
+      <div class="envelope-front"></div>
+      <div class="envelope-flap"></div>
+    </div>
+
+    <button class="btn-open-archive motion-reveal" onclick="scrollToSection('memories')">Open The Archive</button>
+  </section>
+
+  <!-- SECTION 02: THE MEMORY TIMELINE -->
+  <section id="memories" class="section-wrapper">
+    <div class="paper-sheet motion-reveal" data-depth="-0.035">
+      <div class="tape-strip" style="width: 100px; top: -12px; left: 40px; transform: rotate(-3deg);"></div>
+      <div class="tape-strip" style="width: 100px; top: -12px; right: 40px; transform: rotate(2deg);"></div>
+
+      <div style="text-align: center; margin-bottom: 3rem;">
+        <span class="handwriting">Chapter I</span>
+        <h2 style="font-size: 2.5rem; color: var(--archive-red);">THE MEMORY TIMELINE</h2>
+        <p style="color: var(--aged-olive);" class="editable-text" >Strips of film captured in quiet moments.</p>
+      </div>
+
+      <div class="timeline-spine">
+        <!-- Memory Entry 1 -->
+        <div class="timeline-item motion-reveal">
+          <div class="film-frame" data-depth="0.03" style="transform: rotate(-2.5deg);" onclick="openLightbox('./assets/first-day.jpg', 'Golden hour memory')">
+            <img class="film-photo" loading="lazy" decoding="async" src="./assets/first-day.jpg" alt="Memory photo 1">
+            <div class="film-meta">
+
+            </div>
+            <p class="film-caption editable-text" >All started from here!!</p>
+          </div>
+        </div>
+
+        <!-- Memory Entry 2 -->
+        <div class="timeline-item motion-reveal">
+          <div class="film-frame" data-depth="0.03" style="transform: rotate(2deg);" onclick="openLightbox('./assets/first-kiss.jpg', 'Kaisa lga tha first kiss')">
+            <img class="film-photo" loading="lazy" decoding="async" src="./assets/first-kiss.jpg" alt="Memory photo 2">
+            <div class="film-meta">
+              <span class="editable-text" >02 / FRAME</span>
+              <span class="editable-text" >ENTRY N° 02</span>
+            </div>
+            <p class="film-caption editable-text" >I think we had first then.</p> 
+          </div>
+        </div>
+
+        <!-- Memory Entry 3 -->
+        <div class="timeline-item motion-reveal">
+          <div 
+              class="film-frame"
+              data-depth="0.03" 
+              style="transform: rotate(-1.5deg);"
+              onclick="openLightbox('./assets/first-eat.jpg', 'Atcha lga tere hath se khake')">
+            <img class="film-photo" loading="lazy" decoding="async"
+                src="./assets/first-eat.jpg" alt="Memory photo 3">
+            <div class="film-meta">
+              <span class="editable-text" >03 / FRAME</span>
+              <span class="editable-text" >ENTRY N° 03</span>
+            </div>
+            <p class="film-caption editable-text" >Tasty Tasty ^_^</p>
+          </div>
+        </div>
+
+        <!-- Memory Entry 4 -->
+        <div class="timeline-item motion-reveal">
+          <div class="film-frame" data-depth="0.03" style="transform: rotate(2.5deg);"
+              onclick="openLightbox('./assets/maya.jpg', 'Really Most Precious photo')">
+            <img class="film-photo" loading="lazy" decoding="async" 
+                src="./assets/maya.jpg" alt="Memory photo 4">
+            <div class="film-meta">
+              <span class="editable-text" >04 / FRAME</span>
+              <span class="editable-text" >ENTRY N° 04</span>
+            </div>
+            <p class="film-caption editable-text" >My favorite Pic.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 03: LITTLE THINGS WE KEEP -->
+  <section id="keepsakes" class="section-wrapper">
+    <div class="paper-sheet motion-reveal" data-depth="-0.035">
+      <div style="text-align: center; margin-bottom: 2.5rem;">
+        <span class="handwriting">Chapter II</span>
+        <h2 style="font-size: 2.5rem; color: var(--archive-red);">LITTLE THINGS WE KEEP</h2>
+        <p style="color: var(--aged-olive);">Tap paper notes to turn them over.</p>
+      </div>
+
+      <div class="keepsake-grid">
+        <!-- Interactive Note 1 -->
+        <div class="interactive-note motion-reveal" onclick="toggleNote(this)" style="transform: rotate(-2deg);">
+          <div class="note-content-front">
+            <p class="handwriting">Note N° 1</p>
+            <p class="editable-text"  style="margin-top: 0.5rem;">"A small note tucked inside a jacket pocket..."</p>
+            <span style="font-size: 0.75rem; color: #999; margin-top: 1rem; display: block;">[ Tap to reveal ]</span>
+          </div>
+          <div class="note-content-back">
+            <p class="handwriting" style="color: var(--archive-red);">Hidden Message:</p>
+            <p class="editable-text"  style="margin-top: 0.5rem;">I love you my sweetheart.</p>
+          </div>
+        </div>
+
+        <!-- Ticket Keepsake -->
+        <div class="ticket-stub motion-reveal" style="transform: rotate(2.5deg);">
+          <p style="font-size: 0.75rem; letter-spacing: 0.1em; color: var(--aged-olive);">ADMIT ONE</p>
+          <h3 class="editable-text"  style="font-size: 1.2rem; margin: 0.3rem 0;">LATE NIGHT CINEMA</h3>
+          <p class="editable-text"  style="font-size: 0.85rem; color: #666;">ROW B • SEAT 12 &amp; 13</p>
+        </div>
+
+        <!-- Interactive Note 2 -->
+        <div class="interactive-note motion-reveal" onclick="toggleNote(this)" style="transform: rotate(-1deg);">
+          <div class="note-content-front">
+            <p class="handwriting">Note N° 2</p>
+            <p class="editable-text"  style="margin-top: 0.5rem;">"Pressed petals from a weekend walk."</p>
+            <span style="font-size: 0.75rem; color: #999; margin-top: 1rem; display: block;">[ Tap to reveal ]</span>
+          </div>
+          <div class="note-content-back">
+            <p class="handwriting" style="color: var(--archive-red);">Hidden Message:</p>
+            <p class="editable-text"  style="margin-top: 0.5rem;">chall baunii ^.^.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 06: A LETTER FOR LATER -->
+  <section id="letter" class="section-wrapper">
+    <div class="paper-sheet motion-reveal" data-depth="-0.035">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <span class="handwriting">Chapter V</span>
+        <h2 style="font-size: 2.5rem; color: var(--archive-red);">A LETTER FOR LATER</h2>
+      </div>
+
+      <div class="letter-container">
+        <span class="handwriting" style="font-size: 1.8rem;">Dear My Love,</span>
+        <div class="letter-body editable-text"  style="margin-top: 1rem;">
+          Thank you for every shared laugh, quiet evening, and unforgettable moment. 
+          
+          This archive is a small token of all the memories we've gathered so far—and a promise for all the ones still waiting for us down the road.
+        </div>
+        <div style="margin-top: 2rem; text-align: right;">
+          <span class="handwriting" style="font-size: 1.5rem;">Yours always.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 07: THE FINAL ARCHIVE -->
+  <section id="final-archive" class="section-wrapper">
+    <div style="max-width: 600px; margin: 0 auto;" class="motion-reveal">
+      <h2 class="editable-text"  style="font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 1rem; color: var(--paper-cream);">"Some things deserve a place to stay."</h2>
+      <p class="handwriting" style="color: var(--dusty-rose); font-size: 1.6rem; margin-bottom: 2.5rem;">LOVE, ARCHIVED.</p>
+
+      <button class="btn-open-archive" onclick="scrollToSection('archive')">Back To The Beginning</button>
+
+      <div style="margin-top: 4rem; font-size: 0.8rem; opacity: 0.7; letter-spacing: 0.1em; text-transform: uppercase;">
+        Made of memories • Production Ready
+      </div>
+    </div>
+  </section>
+
+  <!-- Accessible Lightbox Modal -->
+  <div class="lightbox-modal" id="lightbox" onclick="closeLightbox()" role="dialog" aria-modal="true" aria-label="Image View">
+    <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close modal">×</button>
+    <img class="lightbox-content" id="lightboxImg" src="" alt="Expanded View">
+    <p class="lightbox-cap" id="lightboxCap"></p>
+  </div>
+
+  <script>
+    /* --- MOTION ENGINE --- */
+    (function () {
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+      const $ = (q) => [...document.querySelectorAll(q)];
+
+      // Extra floating decor per section (depth layers)
+      const flower = (c) => `<svg viewBox="0 0 100 100" fill="none"><path d="M50 20C40 5 20 20 35 35C15 35 15 60 35 60C20 75 40 90 50 75C60 90 80 75 65 60C85 60 85 35 65 35C80 20 60 5 50 20Z" fill="${c}"/><circle cx="50" cy="47" r="8" fill="#751f2b"/></svg>`;
+      const heart = (c) => `<svg viewBox="0 0 100 100"><path d="M50 88C20 62 8 44 8 29a21 21 0 0 1 42-6 21 21 0 0 1 42 6c0 15-12 33-42 59z" fill="${c}"/></svg>`;
+      $('.section-wrapper:not(#archive)').forEach((sec, i) => {
+        [[flower('#d9a8a4'), i % 2 ? '4%' : '84%', '6%', 0.3, 64], [heart('#8b2635'), i % 2 ? '86%' : '3%', '88%', 0.18, 48]].forEach(([svg, x, y, d, size]) => {
+          const el = document.createElement('div');
+          el.className = 'extra-decor'; el.dataset.depth = d;
+          el.style.cssText = `left:${x};top:${y};width:${size}px;height:${size}px;`;
+          el.innerHTML = svg; sec.appendChild(el);
+        });
+      });
+
+      // Petals
+      if (!reduce) {
+        const box = document.getElementById('petals');
+        const n = innerWidth < 768 ? 7 : 12;
+        for (let i = 0; i < n; i++) {
+          const p = document.createElement('span'), z = 9 + Math.random() * 10;
+          p.className = 'petal';
+          p.style.cssText = `left:${Math.random() * 100}%;width:${z}px;height:${z}px;--t:${16 + Math.random() * 12}s;--w:-${Math.random() * 20}s;--dx:${(Math.random() - .5) * 120}px`;
+          box.appendChild(p);
+        }
+      }
+
+      // Staggered slow reveals
+      const io = new IntersectionObserver((entries) => {
+        let k = 0;
+        entries.filter(e => e.isIntersecting).forEach(e => {
+          e.target.style.setProperty('--d', (k++ * 0.18) + 's');
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
+      $('.motion-reveal').forEach(el => io.observe(el));
+
+      // Pause vinyl offscreen
+      const vin = document.getElementById('vinylRecord');
+      new IntersectionObserver(([e]) => vin.classList.toggle('offscreen', !e.isIntersecting)).observe(vin);
+
+      // Active nav link
+      const links = $('.nav-links a');
+      const navIO = new IntersectionObserver((es) => es.forEach(e => {
+        if (e.isIntersecting) links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+      }), { threshold: 0.45 });
+      $('.section-wrapper').forEach(sec => navIO.observe(sec));
+
+      // Depth: scroll parallax + tilt (mouse / gyro)
+      const vis = new Set();
+      const dio = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? vis.add(e.target) : vis.delete(e.target)), { rootMargin: '25% 0px' });
+      $('[data-depth]').forEach(el => dio.observe(el));
+      const bar = document.getElementById('progress');
+      let gx = 0, gy = 0, tx = 0, ty = 0, running = false, lastY = -1;
+      function frame() {
+        tx += (gx - tx) * .08; ty += (gy - ty) * .08;
+        const vh = innerHeight, y = scrollY;
+        bar.style.transform = `scaleX(${y / Math.max(1, document.documentElement.scrollHeight - vh)})`;
+        if (!reduce) vis.forEach(el => {
+          const r = (el.parentElement || el).getBoundingClientRect();
+          const off = r.top + r.height / 2 - vh / 2, d = +el.dataset.depth;
+          el.style.translate = `${(tx * d * 60).toFixed(1)}px ${(-off * d + ty * d * 60).toFixed(1)}px`;
+        });
+        if (y === lastY && Math.abs(gx - tx) < .002 && Math.abs(gy - ty) < .002) { running = false; return; }
+        lastY = y; requestAnimationFrame(frame);
+      }
+      const kick = () => { if (!running) { running = true; requestAnimationFrame(frame); } };
+      addEventListener('scroll', kick, { passive: true });
+      addEventListener('resize', kick, { passive: true });
+      if (fine) addEventListener('mousemove', e => { gx = e.clientX / innerWidth * 2 - 1; gy = e.clientY / innerHeight * 2 - 1; kick(); }, { passive: true });
+      else addEventListener('deviceorientation', e => {
+        if (e.gamma == null) return;
+        gx = Math.max(-1, Math.min(1, e.gamma / 25)); gy = Math.max(-1, Math.min(1, (e.beta - 50) / 25)); kick();
+      }, { passive: true });
+      kick();
+
+      // Slow eased scrolling for nav / buttons (native touch scrolling is left untouched)
+      let sid = 0;
+      function easeTo(top, dur = 1800) {
+        if (reduce) return scrollTo(0, top);
+        cancelAnimationFrame(sid);
+        const start = scrollY, dist = top - start, t0 = performance.now();
+        const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        const stop = () => cancelAnimationFrame(sid);
+        addEventListener('touchstart', stop, { once: true, passive: true });
+        addEventListener('wheel', stop, { once: true, passive: true });
+        (function step(now) {
+          const p = Math.min((now - t0) / dur, 1);
+          scrollTo(0, start + dist * ease(p));
+          if (p < 1) sid = requestAnimationFrame(step);
+        })(t0);
+      }
+      window.scrollToSection = (id) => { const el = document.getElementById(id); if (el) easeTo(el.offsetTop); };
+      links.forEach(a => a.addEventListener('click', e => { e.preventDefault(); scrollToSection(a.getAttribute('href').slice(1)); }));
+    })();
+
+    /* --- SECTION 01: HERO ENVELOPE INTERACTION --- */
+    function toggleHeroEnvelope() {
+      const envelope = document.getElementById('heroEnvelope');
+      envelope.classList.toggle('open');
+    }
+
+    /* --- SECTION 02: LIGHTBOX (slow pop) --- */
+    function openLightbox(src, alt) {
+      document.getElementById('lightboxImg').src = src;
+      document.getElementById('lightboxImg').alt = alt || 'Expanded memory photo';
+      document.getElementById('lightboxCap').textContent = alt || '';
+      document.getElementById('lightbox').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+
+    /* --- SECTION 03: INTERACTIVE PAPER NOTES --- */
+    function toggleNote(element) {
+      element.classList.toggle('flipped');
+    }
+
+    /* --- SECTION 04: VINYL SPIN TOGGLE --- */
+    let isSpinning = true;
+    function toggleVinylSpin() {
+      const vinyl = document.getElementById('vinylRecord');
+      isSpinning = !isSpinning;
+      if (isSpinning) {
+        vinyl.classList.add('spinning');
+      } else {
+        vinyl.classList.remove('spinning');
+      }
+    }
+
+    /* --- SECTION 05: INTERACTIVE CALENDAR WITH STORAGE --- */
+    let currentDate = new Date(2026, 9, 1); // Oct 2026
+    let selectedDateKey = null;
+    let events = JSON.parse(localStorage.getItem('love_archived_events') || '{}');
+
+    function renderCalendar() {
+      const monthYearText = document.getElementById('calendarMonthYear');
+      const daysContainer = document.getElementById('calendarDays');
+      
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+
+      const monthNames = ["January", "February", "March", "April", "May", "June", 
+                          "July", "August", "September", "October", "November", "December"];
+      
+      monthYearText.textContent = `${monthNames[month]} ${year}`;
+      daysContainer.innerHTML = '';
+
+      // Day headers
+      ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
+        const head = document.createElement('div');
+        head.className = 'calendar-day-head';
+        head.textContent = day;
+        daysContainer.appendChild(head);
+      });
+
+      const firstDayIndex = new Date(year, month, 1).getDay();
+      const totalDays = new Date(year, month + 1, 0).getDate();
+
+      // Blank slots
+      for (let i = 0; i < firstDayIndex; i++) {
+        const empty = document.createElement('div');
+        daysContainer.appendChild(empty);
+      }
+
+      // Day cells
+      for (let day = 1; day <= totalDays; day++) {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-day';
+        cell.textContent = day;
+
+        const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        
+        if (events[dateKey]) {
+          cell.classList.add('has-event');
+        }
+
+        if (selectedDateKey === dateKey) {
+          cell.classList.add('selected');
+        }
+
+        cell.onclick = () => selectCalendarDate(dateKey, cell);
+        daysContainer.appendChild(cell);
+      }
+    }
+
+    function selectCalendarDate(dateKey, cell) {
+      selectedDateKey = dateKey;
+      document.querySelectorAll('.calendar-day').forEach(c => c.classList.remove('selected'));
+      cell.classList.add('selected');
+
+      document.getElementById('eventDateInput').value = dateKey;
+      document.getElementById('eventNoteInput').value = events[dateKey] || '';
+    }
+
+    function changeMonth(offset) {
+      currentDate.setMonth(currentDate.getMonth() + offset);
+      renderCalendar();
+    }
+
+    function saveCalendarEvent(e) {
+      e.preventDefault();
+      if (!selectedDateKey) return;
+
+      const note = document.getElementById('eventNoteInput').value.trim();
+      if (note) {
+        events[selectedDateKey] = note;
+      } else {
+        delete events[selectedDateKey];
+      }
+
+      localStorage.setItem('love_archived_events', JSON.stringify(events));
+      renderCalendar();
+    }
+
+    function deleteCalendarEvent() {
+      if (!selectedDateKey) return;
+      delete events[selectedDateKey];
+      document.getElementById('eventNoteInput').value = '';
+      localStorage.setItem('love_archived_events', JSON.stringify(events));
+      renderCalendar();
+    }
+
+    // Initialize Calendar
+    renderCalendar();
+  </script>
+
+</body>
+</html>
